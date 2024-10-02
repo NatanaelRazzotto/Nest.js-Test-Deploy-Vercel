@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Vehicle {
+  id                String     @id @default(uuid())
+  plate             String?
+  serialNumber      String?
+  operatingCategory Float
+  imageIDs          String[]   // Armazena os IDs das imagens como array de strings
+  videoIDs          String[]   // Armazena os IDs dos vídeos como array de strings
+  bodywork          Bodywork? @relation(fields: [bodyworkID], references: [id])
+  bodyworkID        String?
+  powertrain        Powertrain? @relation(fields: [powertrainID], references: [id])
+  powertrainID      String?
+  operator          Operator? @relation(fields: [operatorID], references: [id])
+  operatorID        String?
+}
+
+model Bodywork {
+  id        String     @id @default(uuid())
+  nameModel       String
+  description      String?
+  serialNumber String?
+  year Float
+  vehicles Vehicle[]
+  manufacturer    Manufacturer?     @relation(fields: [manufacturerID], references: [id])
+  manufacturerID  String?
+}
+
+model Powertrain {
+  id        String     @id @default(uuid())
+  nameModel       String
+  description      String?
+  serialNumber String?
+  year Float
+  fuel Float
+  vehicles Vehicle[]
+  manufacturer    Manufacturer?     @relation(fields: [manufacturerID], references: [id])
+  manufacturerID  String?
+}
+
+model Manufacturer {
+  id        String     @id @default(uuid())
+  name      String
+  cnpj      String?
+  nationality String
+  bodyworks Bodywork[]
+  powertrain Powertrain []
+}
+
+model Operator {
+   id        String     @id @default(uuid())
+  name      String
+  cnpj      String?
+  nationality String
+  vehicle  Vehicle []
+}
+
