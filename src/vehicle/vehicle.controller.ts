@@ -16,6 +16,12 @@ export class VehicleController {
         return this.vehicleService.findById(id);
     }
 
+    // Rota para buscar um usuário por id
+    @Get('/serial-number/:id')
+    async findBySerialNumber(@Param('id') id: string) {
+        return this.vehicleService.findByNumber(id);
+    }
+
 //   @Post()
 //   async create(@Body() data: { email: string; name?: string }) {
 //     return this.vehicleService.create(data);

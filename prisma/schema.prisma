@@ -28,6 +28,36 @@ model Vehicle {
   operatorID        String?
 }
 
+model OperationalVehicle {
+  id                String     @id @default(uuid())
+  serialNumber      String?    // Número de série do veículo na frota
+  operatingCategory Float      // Categoria de operação do veículo na frota
+  imageIDs          String[]   // IDs das imagens associadas ao veículo
+  videoIDs          String[]   // IDs dos vídeos associados ao veículo
+
+  // Relacionamento com o operador (empresa dona da frota)
+  operator          Operator?  @relation(fields: [operatorID], references: [id])
+  operatorID        String?    // ID do operador
+  
+  // Relacionamento com o veículo registrado no órgão de trânsito
+  registeredVehicle RegisteredVehicle @relation(fields: [registeredVehicleID], references: [id])
+  registeredVehicleID String
+}
+
+
+model RegisteredVehicle {
+  id                String     @id @default(uuid())
+  plate             String?    // Placa do veículo registrada no órgão de trânsito
+  bodywork          Bodywork?  @relation(fields: [bodyworkID], references: [id])
+  bodyworkID        String?    // Referência à carroceria
+  powertrain        Powertrain? @relation(fields: [powertrainID], references: [id])
+  powertrainID      String?    // Referência ao trem de força
+
+  // Relacionamento com o veículo da frota (um veículo registrado pode pertencer a múltiplos registros de frota)
+  operationalVehicles     OperationalVehicle[]
+}
+
+
 model Bodywork {
   id        String     @id @default(uuid())
   nameModel       String
@@ -35,6 +65,7 @@ model Bodywork {
   serialNumber String?
   year Float
   vehicles Vehicle[]
+  registeredVehicles RegisteredVehicle[]
   manufacturer    Manufacturer?     @relation(fields: [manufacturerID], references: [id])
   manufacturerID  String?
 }
@@ -47,6 +78,7 @@ model Powertrain {
   year Float
   fuel Float
   vehicles Vehicle[]
+  registeredVehicles RegisteredVehicle[]
   manufacturer    Manufacturer?     @relation(fields: [manufacturerID], references: [id])
   manufacturerID  String?
 }
@@ -66,5 +98,6 @@ model Operator {
   cnpj      String?
   nationality String
   vehicle  Vehicle []
+  operationalVehicles OperationalVehicle[]
 }
 

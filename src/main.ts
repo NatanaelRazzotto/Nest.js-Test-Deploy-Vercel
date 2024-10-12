@@ -14,6 +14,6 @@ async function bootstrap() {
 
   app.enableCors(corsOptions); // Habilita CORS com essas opções
 
-  await app.listen(3000);
+  await app.listen(4000);
 }
 bootstrap();
